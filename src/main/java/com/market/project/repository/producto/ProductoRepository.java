@@ -30,7 +30,6 @@ public class ProductoRepository implements IProductoRepository {
             List<ProductoModel> productos = new ArrayList<>();
 
             while (rs.next()) {
-                System.out.println(rs.getString("NOMBRE"));
                 ProductoModel producto = new ProductoModel();
                 producto.setIdProducto(rs.getLong("ID_PRODUCTO"));
                 producto.setNombre(rs.getString("NOMBRE"));
@@ -38,7 +37,7 @@ public class ProductoRepository implements IProductoRepository {
                 producto.setFechaReg(rs.getDate("FECHA_REG"));
                 producto.setIdCategoria(rs.getLong("ID_CATEGORIA"));
                 producto.setNombreCategoria(rs.getString("NOMBRE_CATEGORIA"));
-                
+
                 productos.add(producto);
             }
 
@@ -47,30 +46,60 @@ public class ProductoRepository implements IProductoRepository {
             return productos;
         });
     }
-    
-    /*@Override
-    public List<ProductoModel> GetAll() {
-        String sql = """
-        SELECT DISTINCT
-            p.id_producto,
-            p.nombre,
-            p.precio,
-            p.fecha_reg,
-            p.id_categoria,
-            c.nombre as nombre_categoria
-        FROM PRODUCTOS p 
-        JOIN CATEGORIAS c ON p.id_categoria = c.id_categoria
-        """;
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+    @Override
+    public ProductoModel GetById(Long id) {
+        return jdbcTemplate.execute((Connection con) -> {
+            CallableStatement cs = con.prepareCall("{call Sp_GetProductos(?, ?, ?)}");
+            cs.setString(1, "GetById");
+            cs.setLong(2, id);
+            cs.registerOutParameter(3, Types.REF_CURSOR);
+            cs.execute();
+
+            ResultSet rs = (ResultSet) cs.getObject(3);
             ProductoModel producto = new ProductoModel();
-            producto.setIdProducto(rs.getLong("id_producto"));
-            producto.setNombre(rs.getString("nombre"));
-            producto.setPrecio(rs.getBigDecimal("precio"));
-            producto.setFechaReg(rs.getDate("fecha_reg"));
-            producto.setIdCategoria(rs.getLong("id_categoria"));
-            producto.setNombreCategoria(rs.getString("nombre_categoria"));
+
+            while (rs.next()) {
+                producto.setIdProducto(rs.getLong("ID_PRODUCTO"));
+                producto.setNombre(rs.getString("NOMBRE"));
+                producto.setPrecio(rs.getBigDecimal("PRECIO"));
+                producto.setFechaReg(rs.getDate("FECHA_REG"));
+                producto.setIdCategoria(rs.getLong("ID_CATEGORIA"));
+                producto.setNombreCategoria(rs.getString("NOMBRE_CATEGORIA"));
+            }
+            rs.close();
+            cs.close();
+
             return producto;
         });
-    */
+    }
+
+    @Override
+    public void updateProducto(ProductoModel producto) {
+        jdbcTemplate.execute((Connection con) -> {
+            CallableStatement cs = con.prepareCall("{call Sp_UpdateProductos(?, ?, ?, ?)}");
+            cs.setLong(1, producto.getIdProducto());
+            cs.setString(2, producto.getNombre());
+            cs.setBigDecimal(3, producto.getPrecio());
+            cs.setLong(4, producto.getIdCategoria());
+
+            cs.execute();
+            cs.close();
+            return null;
+        });
+    }
+    
+    @Override
+    public void insertProducto(ProductoModel producto) {
+        jdbcTemplate.execute((Connection con) -> {
+            CallableStatement cs = con.prepareCall("{call Sp_InsertProductos(?, ?, ?)}");
+            cs.setString(1, producto.getNombre());
+            cs.setBigDecimal(2, producto.getPrecio());
+            cs.setLong(3, producto.getIdCategoria());
+
+            cs.execute();
+            cs.close();
+            return null;
+        });
+    }
 }

@@ -5,4 +5,7 @@ import java.util.List;
 
 public interface IProductoService {
     List<ProductoModel> GetAll();
+    ProductoModel GetById(Long id);
+    void updateProducto(ProductoModel producto);
+    void insertProducto(ProductoModel producto);
 }

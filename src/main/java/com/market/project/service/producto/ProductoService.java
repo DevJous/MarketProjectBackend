@@ -16,4 +16,18 @@ public class ProductoService implements IProductoService {
     public List<ProductoModel> GetAll() {
         return productoRepository.GetAll();
     }
+    
+    @Override
+    public ProductoModel GetById(Long id) {
+        return productoRepository.GetById(id);
+    }
+    
+    @Override
+    public void updateProducto(ProductoModel producto) {
+        productoRepository.updateProducto(producto);
+    }
+    
+    public void insertProducto(ProductoModel producto) {
+        productoRepository.insertProducto(producto);
+    }
 }
