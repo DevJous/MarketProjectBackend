@@ -22,7 +22,7 @@ public final class StringUtils {
             }
             parameters.append(")");
         }
-
-        return String.format("{%s%s}", spName, parameters.toString());
+        
+        return String.format("{call %s%s}", spName, parameters.toString());
     }
 }

@@ -1,6 +1,7 @@
 package com.market.project.repository.stock;
 
 import com.market.project.common.constants.SpNames;
+import com.market.project.common.utils.StringUtils;
 import com.market.project.model.StockAssignModel;
 import com.market.project.model.StockLocalModel;
 import com.market.project.model.StockPerLocalModel;
@@ -23,7 +24,7 @@ public class StockRepository implements IStockRepository {
     @Override
     public List<StockLocalModel> getAll() {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageStockLocal(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "LIST");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, 0);
@@ -54,7 +55,7 @@ public class StockRepository implements IStockRepository {
     @Override
     public StockLocalModel assignProduct(StockAssignModel stock) {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageStockLocal(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "ASSIGN");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, stock.getIdProducto());
@@ -83,7 +84,7 @@ public class StockRepository implements IStockRepository {
     @Override
     public StockPerLocalModel byLocalId(Long id) {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageStockLocal(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "GETBYIDLOCAL");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, 0);
@@ -110,7 +111,7 @@ public class StockRepository implements IStockRepository {
     @Override
     public void setSell(StockAssignModel stock) {
         jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageStockLocal(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "SETSELL");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, stock.getIdProducto());
@@ -127,7 +128,7 @@ public class StockRepository implements IStockRepository {
     @Override
     public void setStock(StockAssignModel stock) {
         jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageStockLocal(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "SETSELL");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, stock.getIdProducto());

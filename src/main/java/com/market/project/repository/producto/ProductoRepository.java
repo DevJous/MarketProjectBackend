@@ -1,5 +1,7 @@
 package com.market.project.repository.producto;
 
+import com.market.project.common.constants.SpNames;
+import com.market.project.common.utils.StringUtils;
 import java.sql.Types;
 import com.market.project.model.ProductoModel;
 import java.sql.CallableStatement;
@@ -20,7 +22,7 @@ public class ProductoRepository implements IProductoRepository {
     @Override
     public List<ProductoModel> GetAll() {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_GetProductos(?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_GetProductos, 3));
             cs.setString(1, "GetAll");
             cs.setLong(2, 0); // No se requiere enviar ID
             cs.registerOutParameter(3, Types.REF_CURSOR);
@@ -50,7 +52,7 @@ public class ProductoRepository implements IProductoRepository {
     @Override
     public ProductoModel GetById(Long id) {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_GetProductos(?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_GetProductos, 3));
             cs.setString(1, "GetById");
             cs.setLong(2, id);
             cs.registerOutParameter(3, Types.REF_CURSOR);
@@ -77,7 +79,7 @@ public class ProductoRepository implements IProductoRepository {
     @Override
     public void updateProducto(ProductoModel producto) {
         jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_UpdateProductos(?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_UpdateProductos, 4));
             cs.setLong(1, producto.getIdProducto());
             cs.setString(2, producto.getNombre());
             cs.setBigDecimal(3, producto.getPrecio());
@@ -92,7 +94,7 @@ public class ProductoRepository implements IProductoRepository {
     @Override
     public void insertProducto(ProductoModel producto) {
         jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_InsertProductos(?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_InsertProductos, 3));
             cs.setString(1, producto.getNombre());
             cs.setBigDecimal(2, producto.getPrecio());
             cs.setLong(3, producto.getIdCategoria());

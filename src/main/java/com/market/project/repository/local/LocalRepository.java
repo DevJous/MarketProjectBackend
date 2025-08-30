@@ -1,5 +1,6 @@
 package com.market.project.repository.local;
 
+import com.market.project.common.constants.SpNames;
 import com.market.project.common.utils.StringUtils;
 import com.market.project.model.LocalModel;
 import java.sql.CallableStatement;
@@ -21,7 +22,7 @@ public class LocalRepository implements ILocalRepository {
     @Override
     public LocalModel insertLocal(LocalModel local) {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageLocales(?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageLocales, 5));
             cs.setString(1, "INSERT");
             cs.setNull(2, Types.BIGINT);
             cs.setString(3, local.getNombre());
@@ -46,7 +47,7 @@ public class LocalRepository implements ILocalRepository {
     @Override
     public List<LocalModel> GetAll() {
         return jdbcTemplate.execute((Connection con) -> {
-            CallableStatement cs = con.prepareCall("{call Sp_ManageLocales(?, ?, ?, ?, ?)}");
+            CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageLocales, 5));
             cs.setString(1, "LIST");
             cs.setNull(2, Types.BIGINT);
             cs.setString(3, StringUtils.Empty());
