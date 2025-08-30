@@ -1,5 +1,6 @@
 package com.market.project.repository.local;
 
+import com.market.project.common.utils.StringUtils;
 import com.market.project.model.LocalModel;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class LocalRepository implements ILocalRepository {
-    
+        
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -30,15 +31,15 @@ public class LocalRepository implements ILocalRepository {
             cs.execute();
             ResultSet rs = (ResultSet) cs.getObject(5);
 
-            LocalModel nuevo = new LocalModel();
+            LocalModel localNuevo = new LocalModel();
             if (rs.next()) {
-                nuevo.setIdLocal(rs.getLong("ID_LOCAL"));
-                nuevo.setNombre(rs.getString("NOMBRE"));
-                nuevo.setDireccion(rs.getString("DIRECCION"));
+                localNuevo.setIdLocal(rs.getLong("ID_LOCAL"));
+                localNuevo.setNombre(rs.getString("NOMBRE"));
+                localNuevo.setDireccion(rs.getString("DIRECCION"));
             }
             rs.close();
             cs.close();
-            return nuevo;
+            return localNuevo;
         });
     }
     
@@ -48,6 +49,8 @@ public class LocalRepository implements ILocalRepository {
             CallableStatement cs = con.prepareCall("{call Sp_ManageLocales(?, ?, ?, ?, ?)}");
             cs.setString(1, "LIST");
             cs.setNull(2, Types.BIGINT);
+            cs.setString(3, StringUtils.Empty());
+            cs.setString(4, StringUtils.Empty());
             cs.registerOutParameter(5, Types.REF_CURSOR);
             cs.execute();
 
