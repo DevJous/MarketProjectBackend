@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IStockRepository {
     List<StockLocalModel> getAll();
-    StockLocalModel assignProduct(StockAssignModel stock);
+    void assignProduct(StockAssignModel stock);
     StockPerLocalModel byLocalId(Long id);
     void setSell(StockAssignModel stock);
     void setStock(StockAssignModel stock);

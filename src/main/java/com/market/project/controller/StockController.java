@@ -34,18 +34,20 @@ public class StockController {
     }
     
     @PostMapping("assign")
-    public StockLocalModel assignProduct(@RequestBody StockAssignModel stock) {
-        return stockService.assignProduct(stock);
+    public ResponseEntity assignProduct(@RequestBody StockAssignModel stock) {
+        stockService.assignProduct(stock);
+        
+        return ResponseEntity.ok(Messages.AssignedProduct);
     }
     
     @PutMapping("setsell")
-    public ResponseEntity<String> setSell(StockAssignModel stock) {
+    public ResponseEntity<String> setSell(@RequestBody StockAssignModel stock) {
         stockService.setSell(stock);
         return ResponseEntity.ok(Messages.UpdatedSell);
     }
     
     @PutMapping("setstock")
-    public ResponseEntity<String> setStock(StockAssignModel stock) {
+    public ResponseEntity<String> setStock(@RequestBody StockAssignModel stock) {
         stockService.setStock(stock);
         return ResponseEntity.ok(Messages.UpdatedStock);
     }

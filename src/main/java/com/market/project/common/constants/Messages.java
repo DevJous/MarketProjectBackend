@@ -10,4 +10,5 @@ public final class Messages {
     public static final String UpdatedLocal = "Local actualizado correctamente.";
     public static final String UpdatedSell = "Venta actualizada correctamente.";
     public static final String UpdatedStock = "Stock actualizado correctamente.";
+    public static final String AssignedProduct = "Producto asignado al local correctamente.";
 }

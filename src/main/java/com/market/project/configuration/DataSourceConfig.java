@@ -18,10 +18,7 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         String[] profiles = env.getActiveProfiles();
         String profile = profiles.length > 0 ? profiles[0] : "development";
-
-        Dotenv dotenv = Dotenv.configure()
-                .filename(".env." + profile)
-                .load();
+        Dotenv dotenv = Dotenv.configure().filename(".env." + profile).load();
 
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("oracle.jdbc.OracleDriver");

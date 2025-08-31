@@ -37,11 +37,13 @@ public class StockRepository implements IStockRepository {
             ResultSet rs = (ResultSet) cs.getObject(7);
 
             List<StockLocalModel> stocks = new ArrayList();
-            if (rs.next()) {
+            while (rs.next()) {
                 StockLocalModel sl = new StockLocalModel();
                 sl.setIdStock(rs.getLong("ID_STOCK"));
                 sl.setIdProducto(rs.getLong("ID_PRODUCTO"));
                 sl.setIdLocal(rs.getLong("ID_LOCAL"));
+                sl.setProducto(rs.getString("PRODUCTO"));
+                sl.setLocal(rs.getString("LOCAL"));
                 sl.setStock(rs.getInt("STOCK"));
                 sl.setVentas(rs.getInt("VENTAS"));
                 stocks.add(sl);
@@ -53,8 +55,8 @@ public class StockRepository implements IStockRepository {
     }
 
     @Override
-    public StockLocalModel assignProduct(StockAssignModel stock) {
-        return jdbcTemplate.execute((Connection con) -> {
+    public void assignProduct(StockAssignModel stock) {
+        jdbcTemplate.execute((Connection con) -> {
             CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
             cs.setString(1, "ASSIGN");
             cs.setNull(2, Types.BIGINT);
@@ -65,19 +67,9 @@ public class StockRepository implements IStockRepository {
             cs.registerOutParameter(7, Types.REF_CURSOR);
 
             cs.execute();
-            ResultSet rs = (ResultSet) cs.getObject(7);
 
-            StockLocalModel sl = new StockLocalModel();
-            if (rs.next()) {
-                sl.setIdStock(rs.getLong("ID_STOCK"));
-                sl.setIdProducto(rs.getLong("ID_PRODUCTO"));
-                sl.setIdLocal(rs.getLong("ID_LOCAL"));
-                sl.setStock(rs.getInt("STOCK"));
-                sl.setVentas(rs.getInt("VENTAS"));
-            }
-            rs.close();
             cs.close();
-            return sl;
+            return null;
         });
     }
     
@@ -129,7 +121,7 @@ public class StockRepository implements IStockRepository {
     public void setStock(StockAssignModel stock) {
         jdbcTemplate.execute((Connection con) -> {
             CallableStatement cs = con.prepareCall(StringUtils.GetSpFormat(SpNames.Sp_ManageStockLocal, 7));
-            cs.setString(1, "SETSELL");
+            cs.setString(1, "SETSTOCK");
             cs.setNull(2, Types.BIGINT);
             cs.setLong(3, stock.getIdProducto());
             cs.setLong(4, stock.getIdLocal());

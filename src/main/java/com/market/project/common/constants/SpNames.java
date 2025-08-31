@@ -9,4 +9,5 @@ public final class SpNames {
     public static final String Sp_UpdateProductos = "Sp_UpdateProductos";
     public static final String Sp_ManageLocales = "Sp_ManageLocales";
     public static final String Sp_ManageStockLocal = "Sp_ManageStockLocal";
+    public static final String Sp_GetCategoria = "Sp_GetCategoria";
 }

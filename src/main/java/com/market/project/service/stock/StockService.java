@@ -20,8 +20,8 @@ public class StockService implements IStockService {
     }
     
     @Override
-    public StockLocalModel assignProduct(StockAssignModel stock) {
-        return stockRepository.assignProduct(stock);
+    public void assignProduct(StockAssignModel stock) {
+        stockRepository.assignProduct(stock);
     }
     
     @Override
