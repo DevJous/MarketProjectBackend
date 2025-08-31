@@ -1,155 +1,123 @@
-# Proyecto - Sistema de Productos
+# Proyecto Spring Boot
 
-Este proyecto contiene los procedimientos almacenados y configuraciones necesarias para un sistema de gesti√≥n de productos usando Oracle Database XE.
+## Requisitos previos
 
-## üìã Requisitos del Sistema
+Este proyecto requiere Oracle Database XE 21c y Java 17 o superior.
 
-### Software Necesario
-- **Oracle Database XE 21c** o superior
-- **SQL Developer** (recomendado) o SQL*Plus
-- **Sistema Operativo:** Windows 10/11, Linux, o macOS
+## Instalaci®Æn de Oracle Database XE 21c
 
-### Versiones Compatibles
-- Oracle XE 21c
+1. Descarga e instala [Oracle Database XE 21c](https://www.oracle.com/database/technologies/xe-downloads.html)
+2. Sigue las instrucciones de instalaci®Æn seg®≤n tu sistema operativo
+3. Aseg®≤rate de que el servicio de Oracle est®¶ ejecut®¢ndose
 
-## üöÄ Configuraci√≥n Inicial de Base de Datos
+## Configuraci®Æn de Base de Datos
 
-### 1. Instalaci√≥n de Oracle XE
+### 1. Conectar como SYSDBA
 
-1. **Descargar Oracle XE:**
-   - Visita [Oracle XE Download](https://www.oracle.com/database/technologies/xe-downloads.html)
-   - Descarga la versi√≥n apropiada para tu SO
-
-2. **Instalar Oracle XE:**
-   ```bash
-   # Windows: Ejecutar el instalador como Administrador
-   # Linux: 
-   sudo dpkg -i oracle-xe_21c_amd64.deb
-   sudo /etc/init.d/oracle-xe configure
-   ```
-
-### 2. Conectar como Administrador
-
-```sql
--- Usando SQL*Plus
-sqlplus sys as sysdba
-
--- Usando SQL Developer
-Usuario: sys
-Contrase√±a: [tu_password_sys]
-Rol: SYSDBA
-Hostname: localhost
-Puerto: 1521
-SID: XE
-```
-
-### 3. Crear Usuario de Aplicaci√≥n
-
-```sql
--- Crear usuario
-CREATE USER app_productos IDENTIFIED BY "password123";
-
--- Otorgar privilegios
-GRANT CONNECT, RESOURCE TO app_productos;
-GRANT CREATE VIEW TO app_productos;
-GRANT UNLIMITED TABLESPACE TO app_productos;
-
--- Conectar con el nuevo usuario
-CONNECT app_productos/password123@localhost:1521/XE;
-```
-
-
-## üìÅ Estructura del Proyecto
-
-```
-proyecto-oracle/
-‚îÇ
-‚îú‚îÄ‚îÄ README.md                 # Este archivo
-‚îú‚îÄ‚îÄ sql/
-‚îÇ   ‚îú‚îÄ‚îÄ 01_crear_tablas.sql  # Scripts de creaci√≥n de tablas
-‚îÇ   ‚îú‚îÄ‚îÄ 02_procedimientos.sql # Procedimientos almacenados
-‚îÇ   ‚îú‚îÄ‚îÄ 03_datos_prueba.sql  # Datos de prueba
-‚îÇ   ‚îî‚îÄ‚îÄ 04_consultas.sql     # Consultas de ejemplo
-‚îú‚îÄ‚îÄ config/
-‚îÇ   ‚îú‚îÄ‚îÄ listener.ora         # Configuraci√≥n del listener
-‚îÇ   ‚îî‚îÄ‚îÄ tnsnames.ora         # Configuraci√≥n de conexiones
-‚îî‚îÄ‚îÄ docs/
-    ‚îî‚îÄ‚îÄ manual_usuario.md    # Manual del usuario
-```
-
-## üîß Instalaci√≥n del Proyecto
-
-### 1. Clonar/Descargar el Proyecto
+Abre SQL*Plus desde la l®™nea de comandos y con®¶ctate como SYSDBA:
 
 ```bash
-# Si usas GitBash (O desde GitHub Desktop)
-git clone https://github.com/DevJous/MarketProjectBackend.git
-
-# O descargar y extraer el ZIP
+sqlplus / as sysdba
 ```
 
-### 2. Ejecutar Scripts en Orden
+### 2. Crear usuario de base de datos
+
+Ejecuta los siguientes comandos en SQL*Plus (reemplaza `NOMBRE_USUARIO` y `Contrase?a` con tus credenciales deseadas):
 
 ```sql
--- 1. Conectar como app_productos
-sqlplus app_productos/password123@localhost:1521/XE
+ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;
 
--- 2. Ejecutar scripts en orden
-@sql/01_crear_tablas.sql
-@sql/02_procedimientos.sql
-@sql/03_datos_prueba.sql
+CREATE USER NOMBRE_USUARIO IDENTIFIED BY "Contrase?a"
+DEFAULT TABLESPACE "USERS"
+TEMPORARY TABLESPACE "TEMP";
+
+ALTER USER NOMBRE_USUARIO QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION TO NOMBRE_USUARIO;
+
+GRANT "RESOURCE" TO NOMBRE_USUARIO;
+
+ALTER USER NOMBRE_USUARIO DEFAULT ROLE "RESOURCE";
 ```
 
-### 3. Verificar Instalaci√≥n
+### Ejemplo con credenciales espec®™ficas:
 
 ```sql
--- Verificar tablas creadas
-SELECT table_name FROM user_tables;
+ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;
 
--- Verificar procedimientos
-SELECT object_name FROM user_objects WHERE object_type = 'PROCEDURE';
+CREATE USER DEVJOSE IDENTIFIED BY "admin"
+DEFAULT TABLESPACE "USERS"
+TEMPORARY TABLESPACE "TEMP";
 
--- Verificar datos de prueba
-SELECT COUNT(*) FROM productos;
-SELECT COUNT(*) FROM categorias;
+ALTER USER DEVJOSE QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION TO DEVJOSE;
+
+GRANT "RESOURCE" TO DEVJOSE;
+
+ALTER USER DEVJOSE DEFAULT ROLE "RESOURCE";
 ```
 
-## üèÉ‚Äç‚ôÇÔ∏è Ejecutar el Proyecto
+### 3. Ejecutar scripts de base de datos
 
-### Conexi√≥n con SQL Developer
+1. Abre Oracle SQL Developer
+2. Crea una nueva conexi®Æn con las credenciales del usuario creado:
+   - **Usuario:** DEVJOSE (o el nombre que hayas usado)
+   - **Contrase?a:** admin (o la contrase?a que hayas usado)
+   - **Hostname:** localhost
+   - **Puerto:** 1521
+   - **SID:** XE
+3. Con®¶ctate y ejecuta el script de base de datos proporcionado previamente
 
-1. **Nueva Conexi√≥n:**
-   - Nombre de conexi√≥n: `ProductosDB`
-   - Usuario: `app_productos`
-   - Contrase√±a: `password123`
-   - Hostname: `localhost`
-   - Puerto: `1521`
-   - SID: `XE`
+## Configuraci®Æn de Variables de Entorno
 
-2. **Probar Conexi√≥n** y hacer clic en "Conectar"
+### 1. Archivo para desarrollo: `.env.development`
 
-### Usar Procedimientos Almacenados
+Crea un archivo llamado `.env.development` en la ra®™z del proyecto con el siguiente contenido:
 
-```sql
--- Actualizar un producto
-EXEC SP_UpdateProductos(1, 'Laptop Gaming', 1299.99, 1);
-
--- Consultar productos
-SELECT * FROM productos WHERE id_producto = 1;
+```env
+ALLOWED_ORIGINS=http://localhost:5173
+SPRING_DATASOURCE_URL=jdbc:oracle:thin:@//localhost:1521/XE
+DB_USERNAME=DEVJOSE
+DB_PASSWORD=admin
 ```
 
+### 2. Archivo para producci®Æn: `.env.production`
 
-## üìù Notas Adicionales
+Crea un archivo llamado `.env.production` en la ra®™z del proyecto con el siguiente contenido:
 
-- **Puerto por defecto:** 1521
-- **Usuario SYS contrase√±a:** Configurada durante la instalaci√≥n
+```env
+ALLOWED_ORIGINS=IP O DNS DE PRODUCCION
+SPRING_DATASOURCE_URL=jdbc:oracle:thin:@//IP-DNS:1521/XE
+DB_USERNAME=USUARIO
+DB_PASSWORD=clave
+```
 
-## üìú Licencia
+**Nota:** Aseg®≤rate de reemplazar `DEVJOSE` y `admin` con las credenciales que creaste en el paso anterior.
 
-Este proyecto utiliza Oracle XE que tiene su propia licencia gratuita para desarrollo y pruebas.
+## Configuracion inicial
 
----
+### Ejecutar en modo desarrollo:
 
-**√öltima actualizaci√≥n:** Agosto 2025  
-**Autor:** Jos√© Franco
-**Versi√≥n:** 1.0
+```application.properties
+spring.profiles.active=development
+```
+
+### Ejecutar en modo producci®Æn:
+
+```application.properties
+spring.profiles.active=production
+```
+
+## Notas importantes
+
+- Los archivos `.env.development` y `.env.production` contienen informaci®Æn sensible y no deben ser committeados al repositorio
+- Verifica que Oracle Database XE est®¶ ejecut®¢ndose antes de iniciar la aplicaci®Æn
+- El puerto por defecto de la aplicaci®Æn Spring Boot es 8080
+- Aseg®≤rate de tener Java 17 o superior instalado
+
+## Soluci®Æn de problemas comunes
+
+- **Error de conexi®Æn a Oracle:** Verifica que el servicio Oracle est®¶ ejecut®¢ndose y que el puerto 1521 est®¶ disponible
+- **Usuario no encontrado:** Aseg®≤rate de haber ejecutado correctamente los comandos SQL para crear el usuario
+- **Permisos insuficientes:** Verifica que el usuario tenga los roles RESOURCE y CREATE SESSION asignados
